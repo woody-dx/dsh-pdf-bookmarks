@@ -1,0 +1,57 @@
+{
+  "name": "dsh-pdf-bookmarks",
+  "version": "0.1.0",
+  "description": "PDF outline navigation and local reading bookmarks in the DeepSeek Harness right sidebar.",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "guard.cjs",
+    "cordis.patch.yml",
+    "lib",
+    "README.md",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md",
+    "licenses"
+  ],
+  "dsh": {
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-sidebar-documentpreview"
+      ]
+    },
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "scripts": {
+    "test": "node --test test/*.test.*",
+    "build": "node scripts/build.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.12",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "license": "SEE LICENSE IN THIRD_PARTY_NOTICES.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/woody-dx/dsh-pdf-bookmarks.git"
+  },
+  "homepage": "https://github.com/woody-dx/dsh-pdf-bookmarks#readme",
+  "bugs": {
+    "url": "https://github.com/woody-dx/dsh-pdf-bookmarks/issues"
+  },
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "pdf",
+    "bookmarks"
+  ]
+}

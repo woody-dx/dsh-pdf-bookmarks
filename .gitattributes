@@ -1,0 +1,7 @@
+*.pdf binary
+*.png binary
+*.tar.gz binary
+vendor/** linguist-vendored -whitespace
+lib/** linguist-generated
+lib/client.engine.js -whitespace
+licenses/liberation-fonts/** linguist-vendored -whitespace

@@ -1,0 +1,6 @@
+node_modules/
+*.tgz
+test/host-*/
+test/harness.js
+docs/superpowers/
+.DS_Store

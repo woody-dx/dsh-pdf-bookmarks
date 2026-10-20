@@ -1,0 +1,9 @@
+{
+  "applicationVersion": "0.2.1-rc.2",
+  "package": "@deepseek-ai/dsh-client-ui-sidebar-documentpreview",
+  "file": "lib/client.pdf.js",
+  "pdfjsVersion": "6.3.289",
+  "sha256": "3bd0bab6e9802c04fcd7c7c77b8d03fb0ebaa412000bd6136ef88ca33f6b9ca7",
+  "repository": "https://github.com/deepseek-ai/deepseek-harness",
+  "license": "MIT (Harness); Apache-2.0 (PDF.js); bundled notices retained"
+}
