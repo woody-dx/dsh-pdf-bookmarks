@@ -1,6 +1,7 @@
 {
   "supportedVersions": [
-    "0.2.1-rc.2"
+    "0.2.1-rc.2",
+    "0.2.1-rc.3"
   ],
   "files": {
     "client.js": "005a0663e6a18b270e71d060bd5997218c7292f99f8cb9059eefee3609bcbaec",

@@ -48,3 +48,11 @@ test('FitR 矩形目录定位到矩形顶部，不静默跳到页首',async()=>{
  const doc={numPages:1,getPage:async()=>({getViewport:()=>({height:800,convertToViewportPoint:(x,y)=>[x,800-y]})})};
  assert.deepEqual(await resolveDestination(doc,[0,{name:'FitR'},100,100,400,600]),{page:1,offset:0.25});
 });
+
+test('升级后直接读取旧 v1 书签，读取不重写已有数据',()=>{
+ const raw='{"version":1,"bookmarks":[{"id":"existing-bookmark","page":69,"offset":0.25,"label":"原有阅读位置","createdAt":"2026-10-20T04:00:00.000Z"}]}';
+ let writes=0;
+ const storage={getItem:key=>key==='dsh-pdf-bookmarks:v1:existing-document'?raw:null,setItem:()=>writes++};
+ assert.deepEqual(createBookmarkStore(storage,'existing-document').list(),[{id:'existing-bookmark',page:69,offset:0.25,label:'原有阅读位置',createdAt:'2026-10-20T04:00:00.000Z'}]);
+ assert.equal(writes,0);
+});

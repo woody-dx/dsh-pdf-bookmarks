@@ -3,3 +3,8 @@ const {canActivate}=require('../guard.cjs');
 function fixture(t){const root=fs.mkdtempSync(path.join(os.tmpdir(),'dsh-guard-'));t.after(()=>fs.rmSync(root,{recursive:true,force:true}));fs.mkdirSync(path.join(root,'lib'));const files={};for(const name of ['client.js','client.engine.js']){fs.writeFileSync(path.join(root,'lib',name),'valid '+name);files[name]=crypto.createHash('sha256').update('valid '+name).digest('hex')}fs.writeFileSync(path.join(root,'lib','integrity.json'),JSON.stringify({supportedVersions:['0.2.1-rc.2'],files}));return root;}
 test('未知或缺失版本时只拒绝插件启用',t=>{const root=fixture(t);assert.equal(canActivate('0.2.1-rc.2',root),true);for(const v of ['0.2.1','0.2.2','',undefined])assert.equal(canActivate(v,root),false)});
 test('插件文件缺失或损坏时不向启动器抛异常',t=>{const root=fixture(t);fs.unlinkSync(path.join(root,'lib','client.engine.js'));assert.equal(canActivate('0.2.1-rc.2',root),false);fs.writeFileSync(path.join(root,'lib','client.engine.js'),'broken');assert.equal(canActivate('0.2.1-rc.2',root),false);fs.writeFileSync(path.join(root,'lib','integrity.json'),'broken');assert.equal(canActivate('0.2.1-rc.2',root),false)});
+
+test('完整发布产物允许已验证的 rc.2 与 rc.3，拒绝未来版本',()=>{
+ for(const version of ['0.2.1-rc.2','0.2.1-rc.3'])assert.equal(canActivate(version),true,version+' should activate');
+ for(const version of ['0.2.1-rc.4','0.2.2','0.3.0',undefined])assert.equal(canActivate(version),false);
+});

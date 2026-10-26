@@ -1,5 +1,7 @@
 # 预构建安装包
 
-`dsh-pdf-bookmarks-0.1.0.tgz` 对应源码标签 `v0.1.0`。包内含运行文件和第三方许可及相应字体源码；不会执行安装脚本。校验值见同名 `.sha256`。
+当前版本：0.1.1。下载最新正式版：[dsh-pdf-bookmarks.tgz](https://github.com/woody-dx/dsh-pdf-bookmarks/releases/latest/download/dsh-pdf-bookmarks.tgz)。
 
-下载后，在 dsh Desktop 0.2.1-rc.2 的插件管理页添加该文件的绝对路径。当前实测平台为 macOS Apple Silicon。
+GitHub Release 同时保留带版本号的安装包与 SHA-256 校验文件。仓库 `dist/` 的固定名称包与当前版本包内容相同；旧版发布可从历史 Release 下载。
+
+支持 macOS Apple Silicon 上的 dsh Desktop 0.2.1-rc.2 与 0.2.1-rc.3；安装与升级方法见根 README。
