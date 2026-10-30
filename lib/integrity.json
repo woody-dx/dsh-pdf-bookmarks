@@ -1,10 +1,6 @@
 {
-  "supportedVersions": [
-    "0.2.1-rc.2",
-    "0.2.1-rc.3"
-  ],
   "files": {
-    "client.js": "005a0663e6a18b270e71d060bd5997218c7292f99f8cb9059eefee3609bcbaec",
+    "client.js": "c0a00d69dd0d7ba3b939d60511fcca4f86096f307f1a457140815f22a241e46d",
     "client.engine.js": "fe94727669cf758a3783303282a02ad7d39aefa907c2754281863bebbdf3748c"
   }
 }

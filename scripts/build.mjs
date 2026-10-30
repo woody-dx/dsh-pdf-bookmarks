@@ -16,5 +16,5 @@ const body=compiled.outputFiles[0].text;
 const entry=`// dsh-pdf-bookmarks: small, exception-isolated entry; PDF engine loads only when used.\ntry { window.__ModuleLoader__?.load({id:'dsh-pdf-bookmarks',factory:(require)=>{try {const module={exports:{}};const exports=module.exports;\n${body}\nconst plugin=module.exports;return {inject:plugin.inject,apply:ctx=>plugin.apply(ctx,()=>require.async('./client.engine.js'))};} catch(error){console.warn('[dsh-pdf-bookmarks] client disabled',error);return {apply(){}};}}}); } catch(error) { console.warn('[dsh-pdf-bookmarks] module registration skipped',error); }\n`;
 writeFileSync('lib/client.js',entry);
 const files=Object.fromEntries(['client.js','client.engine.js'].map(name=>[name,hash(readFileSync('lib/'+name))]));
-writeFileSync('lib/integrity.json',JSON.stringify({supportedVersions:['0.2.1-rc.2','0.2.1-rc.3'],files},null,2)+'\n');
+writeFileSync('lib/integrity.json',JSON.stringify({files},null,2)+'\n');
 console.log('Built exception-isolated entry and offline PDF engine:',files);

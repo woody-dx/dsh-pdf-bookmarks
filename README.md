@@ -30,17 +30,19 @@
 
 ## 兼容性与故障回退
 
-当前实测支持 **dsh Desktop 0.2.1-rc.2 和 0.2.1-rc.3**。启用条件位于 `cordis.patch.yml`：在加载插件入口前，调用 `guard.cjs` 核对精确版本白名单以及两个构建文件的 SHA-256。检查异常、版本未验证、文件缺失或哈希不匹配均仅禁用本插件。升级 dsh 后，未经适配验证的版本会继续使用内置预览。
+从 **0.1.2** 起采用能力兼容模式：不声明 `engines.dsh` 或 DSH 相关 peer 版本限制，也不维护宿主版本白名单。升级 dsh 后默认尝试加载，版本号变化本身不会停用插件。启用条件位于 `cordis.patch.yml`：加载入口前，`guard.cjs` 只核对两个构建文件的 SHA-256；文件缺失、损坏或检查异常均仅禁用本插件。客户端在注入前检查 `effect`、`slots.inject/register` 与 `documentPreviews.register`，接口缺失时保留内置查看器；部分注册失败时立即清理自身注册项。
 
-Host 入口 `index.js` 无运行时依赖、不提供或替换任何核心服务。正式插件不安装 `dsh-tools`、Cordis 或其他 dsh 核心包。客户端接口注册异常会被捕获；PDF 引擎在打开 PDF 时才加载，加载失败会移除增强预览定义并交回内置查看器；正文错误边界提供 **使用内置 PDF 预览**。这是对已验证版本及测试故障场景的保护，不宣称能覆盖未来宿主完全移除插件加载协议等无法事先验证的变化。
+Host 入口 `index.js` 无运行时依赖、不提供或替换任何核心服务。正式插件不安装 `dsh-tools`、Cordis 或其他 dsh 核心包。客户端接口注册异常会被捕获；PDF 引擎在打开 PDF 时才加载，加载失败会移除增强预览定义并交回内置查看器；正文错误边界提供 **使用内置 PDF 预览**。这是对已验证版本及测试故障场景的保护。默认尝试加载不等于承诺所有未来版本兼容；宿主彻底改变模块加载协议或接口语义时仍可能需要适配。
 
 ## 安装与停用
 
-当前仅验证 **macOS Apple Silicon 上的 dsh Desktop 0.2.1-rc.2 和 0.2.1-rc.3**；不宣称 Web、Windows、Linux 或其他 dsh 版本可用。其他版本默认禁用此查看器。
+0.1.2 在 **macOS Apple Silicon、dsh Desktop 0.2.1-rc.5** 上验证独立 Host 加载与故障隔离；此前 rc.2/rc.3 的验收记录保留在历史更新说明中。其他版本默认尝试加载，但未逐一实测；Web、Windows、Linux 仍未经验证。
 
-当前版本为 **0.1.1**。推荐从 [最新发布页](https://github.com/woody-dx/dsh-pdf-bookmarks/releases/latest) 下载预构建安装包，或直接下载始终指向最新正式版的 [dsh-pdf-bookmarks.tgz](https://github.com/woody-dx/dsh-pdf-bookmarks/releases/latest/download/dsh-pdf-bookmarks.tgz)。在桌面版 **插件 → 添加插件** 中填写下载文件的绝对路径，然后启用插件并完整退出、重新打开 dsh。安装包包含完整 `lib/` 和许可证，不需要构建或运行安装脚本。
+当前版本为 **0.1.2**。推荐从 [最新发布页](https://github.com/woody-dx/dsh-pdf-bookmarks/releases/latest) 下载预构建安装包，或直接下载始终指向最新正式版的 [dsh-pdf-bookmarks.tgz](https://github.com/woody-dx/dsh-pdf-bookmarks/releases/latest/download/dsh-pdf-bookmarks.tgz)。在桌面版 **插件 → 添加插件** 中填写下载文件的绝对路径，然后启用插件并完整退出、重新打开 dsh。安装包包含完整 `lib/` 和许可证，不需要构建或运行安装脚本。
 
-从旧版升级时使用同一个插件名称安装新包，不必先卸载或清除应用存储。更新不会迁移、清空个人书签，也不会修改任务或账号。重启后可在插件详情页核对版本 `0.1.1`，再在 PDF 的查看器菜单选择 **PDF 书签**。已有 GitHub 标签、旧安装包和已经下载的文件不会自动变成新版，请下载最新资产后更新。
+从旧版升级时使用同一个插件名称安装新包，不必先卸载或清除应用存储。更新不会迁移、清空个人书签，也不会修改任务或账号。重启后可在插件详情页核对版本 `0.1.2`，再在 PDF 的查看器菜单选择 **PDF 书签**。已有 GitHub 标签、旧安装包和已经下载的文件不会自动变成新版，请下载最新资产后更新。
+
+也可在桌面版 **插件 → 添加插件** 中输入 `dsh-pdf-bookmarks@latest`，从 npm 安装。使用 CLI 时应使用当前桌面版随附的 CLI，执行 `dsh plugin --profile desktop add dsh-pdf-bookmarks@latest --save-exact --ignore-scripts`，随后完整退出并重新打开应用。npm 的 `latest` 与 GitHub 最新正式 Release 保持一致。
 
 也可下载仓库默认分支的源码 ZIP 并解压，在桌面版添加插件时填写解压目录的绝对路径。源码仓库同样包含预构建 `lib/`。不要使用旧版全局 `dsh` CLI 管理较新的桌面 profile。
 
@@ -68,11 +70,19 @@ node scripts/host-smoke.cjs
 
 `vendor/source.json` 记录来自当前应用的离线 PDF 引擎快照、版本和 SHA-256。构建仅调整模块身份、样式归属及自身所需的低层导出。第三方许可证见 `THIRD_PARTY_NOTICES.md` 和原始快照文件头部。修改源码后必须重新构建以更新完整性清单。
 
-`test/harness.jsx` 和 `scripts/harness.mjs` 是隔离的浏览器验收入口，使用合成三页 PDF，不读取个人任务。`scripts/host-smoke.cjs` 使用独立数据目录验证普通安装、本地链接、未知版本、引擎缺失、构建损坏和保护脚本异常等场景；需要本机安装上述 dsh Desktop，脚本不会读取真实 profile。
+`test/harness.jsx` 和 `scripts/harness.mjs` 是隔离的浏览器验收入口，使用合成三页 PDF，不读取个人任务。`scripts/host-smoke.cjs` 使用独立数据目录验证普通安装、本地链接、未来版本号、引擎缺失、构建损坏和保护脚本异常等场景；需要本机安装上述 dsh Desktop，脚本不会读取真实 profile。
 
 ## 与其他插件的区别
 
 本插件只增强已有工作区 PDF 的右侧预览，提供内嵌目录与个人阅读书签。论文文献库、AI 伴读、PDF 内容提取与批注工作台解决其他需求；本插件不增加模型工具或会话持久状态。社区目录中的会话书签与文件路径收藏也不等同于 PDF 页内阅读位置。
+
+## 0.1.2 更新说明
+
+- 取消 `engines.dsh` 与精确版本白名单，改为按实际接口尝试启用。DSH 版本更新不再自动停用插件。
+- 保留产物 SHA-256 检查、Host 空入口、客户端异常隔离和引擎失败回退；注册中途失败立即清理已注册的查看器。
+- PDF 引擎与 0.1.1 逐字节相同；书签格式、存储键、摘要算法和 PDF 内容均不变。
+- 18 项 Node 测试通过，覆盖能力缺失、注册失败清理和旧书签恢复；rc.5 独立 Host 的 8 个正常与故障场景通过，其中未来版本号不再拒绝注册。未来版本号场景只验证版本策略，不代表实测未来宿主接口。
+- 未使用真实任务执行 PDF 页面验收；页面上的目录、书签、缩放与引擎故障场景仍需结合实际使用检查。
 
 ## 0.1.1 更新说明
 

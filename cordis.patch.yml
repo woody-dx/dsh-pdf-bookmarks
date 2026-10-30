@@ -1,4 +1,4 @@
 - insert:
     - id: pdf-bookmarks
       name: dsh-pdf-bookmarks
-      disabled: !!js "(() => { try { const createRequire = process.getBuiltinModule('node:module').createRequire; const profileRequire = createRequire(new URL('package.json', baseUrl)); return !createRequire(profileRequire.resolve('dsh-pdf-bookmarks/package.json'))('./guard.cjs').canActivate(process.env.DSH_CLIENT_VERSION) } catch { return true } })()"
+      disabled: !!js "(() => { try { const createRequire = process.getBuiltinModule('node:module').createRequire; const profileRequire = createRequire(new URL('package.json', baseUrl)); return !createRequire(profileRequire.resolve('dsh-pdf-bookmarks/package.json'))('./guard.cjs').canActivate() } catch { return true } })()"

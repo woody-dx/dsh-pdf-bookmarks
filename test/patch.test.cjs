@@ -27,7 +27,7 @@ function fixture(t, linked = false) {
   fs.writeFileSync(path.join(pkg, 'lib', name), name);
   files[name] = crypto.createHash('sha256').update(name).digest('hex');
  }
- fs.writeFileSync(path.join(pkg, 'lib/integrity.json'), JSON.stringify({ supportedVersions: ['0.2.1-rc.2'], files }));
+ fs.writeFileSync(path.join(pkg, 'lib/integrity.json'), JSON.stringify({ files }));
  const disabled = (version = '0.2.1-rc.2') => vm.runInNewContext(expression, {
   URL,
   baseUrl: pathToFileURL(profile + path.sep).href,
@@ -42,9 +42,11 @@ test('普通包安装从当前 profile 找到 guard，无需固定用户目录',
 test('链接安装和带空格路径可以正常启用', t => {
  assert.equal(fixture(t, true).disabled(), false);
 });
-test('未知版本与损坏引擎只禁用自身', t => {
+test('未知或缺失宿主版本仍启用，损坏引擎只禁用自身', t => {
  const f = fixture(t);
- assert.equal(f.disabled('99.0.0'), true);
+ assert.equal(f.disabled('0.2.1-rc.5'), false);
+ assert.equal(f.disabled('99.0.0'), false);
+ assert.equal(f.disabled(''), false);
  fs.unlinkSync(path.join(f.pkg, 'lib/client.engine.js'));
  assert.equal(f.disabled(), true);
 });
