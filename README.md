@@ -92,3 +92,11 @@ node scripts/host-smoke.cjs
 - 在 rc.3 实机确认已有 PDF 的目录跳转；合成 PDF 验证书签保存、刷新恢复、无目录状态和引擎失败回退。未重新在 rc.2 实机执行整套验收，其既有实现与支持范围保留。
 
 发布者在每个正式 GitHub Release 同时提供带版本号的安装包、固定名称 `dsh-pdf-bookmarks.tgz` 以及 SHA-256 校验文件。社区目录的 `tarball` 使用固定名称的 latest 下载地址；后续发版无需修改该下载地址。
+
+## 发布流程
+
+1. 修改源码后执行 `npm run build`、`npm test` 和 `node scripts/host-smoke.cjs`；Host 验证需要本机 DSH Desktop。
+2. 同步更新 `package.json`、`package-lock.json` 与本文版本说明，打包到 `dist/`，更新带版本号的包、固定名称包和对应 SHA-256 文件。
+3. 创建对应 `v版本号` 标签，将提交与标签一起推送；随后在 GitHub 创建正式 Release，上传带版本号的安装包、固定名称 `dsh-pdf-bookmarks.tgz` 及两份 SHA-256 文件，将其设为 latest。先核对标签、包版本和校验值，再发布；已有历史 Release 保留。
+4. 使用 npm 官方仓库登录，执行 `npm publish ./dist/dsh-pdf-bookmarks-版本号.tgz --access public --tag latest --registry=https://registry.npmjs.org --ignore-scripts`，按 npm 账户要求完成二次验证。
+5. 核对 npm latest、GitHub latest 和 Release 资产校验值一致，再更新本机插件。仅修改源码不会自动升级已安装的旧插件。
